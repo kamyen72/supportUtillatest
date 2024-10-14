@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Create New Platform Agent</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="js/menu.js"></script>
+    <link rel="stylesheet" href="css/menu.css">
+    <style>
+        
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            GetMenuRootsV3();
+        });
+    </script>
+
+
+
+    <script>
+        function GenerateExcelFile() {
+            //alert("Platform:" + $("#SelectedPlatform").val());
+            if ($("#txtAgentName").val() == "") {
+                $("#txtAgentName").attr("style", "background:pink;");
+                $("#txtAgentName").attr("placeholder", "This field cannot be blank");
+            }
+
+            var today = new Date();
+            $("#txtAPID").val($("#txtAgentName").val() + formatDate(today));
+
+            if ($("#txtCompanyCode").val() == "") {
+                $("#txtCompanyCode").attr("style", "background:pink");
+                $("#txtCompanyCode").attr("placeholder", "This field cannot be blank");
+            }
+
+            if ($("#txtAPID").val() == "") {
+                $("#txtAPID").attr("style", "background:pink");
+                $("#txtAPID").attr("placeholder", "This field cannot be blank");
+            }
+
+            if ($("#txtAPIDomain").val() == "") {
+                $("#txtAPIDomain").attr("style", "background:pink");
+                $("#txtAPIDomain").attr("placeholder", "This field cannot be blank");
+            }
+
+            //alert(JSON.stringify({ "AgentName": $("#txtAgentName").val(), "CompanyCode": $("#txtCompanyCode").val(), "Platform": $("#SelectedPlatform").val(), "APID": $("#txtAPID").val(), "APIDomain": "", "PlatformText": "" }));
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:5011/API/GenNewPlatformExcel",
+                data: JSON.stringify({ "AgentName": $("#txtAgentName").val(), "CompanyCode": $("#txtCompanyCode").val(), "Platform": $("#SelectedPlatform").val(), "APID": $("#txtAPID").val(), "APIDomain": "", "PlatformText": "" }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    alert("Excel file generated !!! " + response.length);
+
+                    // var converted = JSON.parse(response);
+                    // alert("converted: " + response[0].FileName);
+
+                    document.getElementById("downloadbutton2").href = "http://localhost:5011/ExcelFiles/" + response[0].FileName;
+
+                    alert(document.getElementById("downloadbutton2").href);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response, status) {
+                    //alert(status);
+                    $("#div_result").html("<span style='color:red;'>Error: </span>" + response.responseText);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function formatDate(date) {
+            var dd = date.getDate();
+            var mm = date.getMonth() + 1; //January is 0!
+            var yyyy = date.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            //return dd + '/' + mm + '/' + yyyy;
+            return yyyy + '' + mm + '' + dd;
+
+        }
+    </script>
+
+
+</head>
+<body>
+    <div id="mainDiv" class="container-fluid">
+        <div id="menubarboss" class="row" style="margin-left:15px;display:block;position:absolute;top:10px;border-style:solid;border-width:3px;">
+            <div id="menubar" class="col-sm-12 col-md-12" style="padding: 5px 5px 5px 5px;">
+            </div>
+        </div>
+    </div>
+    <div id="menubuttdiv" ><button id="menubutt" style="height:30px;border-radius:10px;" onclick="hidemenu()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" /></svg></button></div>
+    <br />
+    <div id="MainContent" class="container-fluid" style="margin-top:80px;">
+        <div class="row">
+            <div class="col-sm-12 col-md-12" style="text-align:center;">
+                <span class="TitleText">New Agent Creation</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 col-md-5" style="text-align: left;">
+            </div>
+
+            <div class="col-sm-2 col-md-2" style="text-align: right;">
+                <label>Platform</label>
+                <select id="SelectedPlatform">
+                    <option value="HL">HL</option>
+                    <option value="TM">TM</option>
+                    <option value="King">King</option>
+                    <option value="TM2" selected>TM2</option>
+                    <option value="TM3">TM3</option>
+                </select><br />
+                <label>Agent Name</label>&nbsp;<input type="text" id="txtAgentName" value="" /><br />
+                <label>Company Code</label>&nbsp;<input type="text" id="txtCompanyCode" value="" /><br />
+                <label>APID</label>&nbsp;<input type="text" id="txtAPID" value="" /><br />
+                <label>API Domain</label>&nbsp;<input type="text" id="txtAPIDomain" value="https://hkgp.3mplay.net" /><br />
+                <button onclick="GenerateExcelFile()">Generate Excel File</button>
+                <a id="downloadbutton2" href="">Download</a>
+            </div>
+
+            <div class="col-sm-5 col-md-5" style="text-align: left;">
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12" id="div_result" style="text-align: center;font-size: 16px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
