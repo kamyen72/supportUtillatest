@@ -4,5 +4,7 @@
     {
         public string companyId { get; set; }
         public string status { get; set; }
+
+        public string platform { get; set; }
     }
 }

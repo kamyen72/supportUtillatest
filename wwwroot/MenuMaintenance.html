@@ -260,6 +260,13 @@
             var myparentid = $(me).attr('data-mparentid');
             var myislink = $(me).attr('data-mislink');
 
+            if (myislink == "false") {
+                myislink = 0;
+            }
+            else if (myislink == "true") {
+                myislink = 1;
+            }
+
             $("#mtext").val(mytext);
             $("#mid").val(myid);
             $("#murl").val(myurl);
@@ -282,6 +289,12 @@
                 var myseq = $("#sequence").val();
                 var myparentid = $("#mparentid").val();
                 var myislink = $("#mislink").val();
+
+                if (myislink == "") {
+                    myislink = 0;
+                }
+                else if (myislink == "false") { myislink = 0; }
+                else if (myislink == "true") { myislink = 1; }
 
                 $.ajax({
                     type: "POST",

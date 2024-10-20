@@ -8,6 +8,7 @@
         public static string userId = "MasterUser";
         public static string password = "@master85092212";
         public static string MyID = "db_master";
+        public static string shortname = "master";
     }
 
     public class db_ghl33
@@ -18,6 +19,7 @@
 		public static string userId = "GHLUser";
 		public static string password = "@golden85092212";
         public static string MyID = "db_ghl33";
+        public static string shortname = "ghl33";
     }
 
     public class db_ghl55
@@ -28,6 +30,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_ghl55";
+        public static string shortname = "hl";
     }
 
     public class db_tm
@@ -38,6 +41,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_tm";
+        public static string shortname = "tm";
     }
 
     public class db_tm2
@@ -48,6 +52,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_tm2";
+        public static string shortname = "tm2";
     }
 
     public class db_tm3
@@ -58,6 +63,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_tm3";
+        public static string shortname = "tm3";
     }
 
     public class db_bv
@@ -68,6 +74,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_bv";
+        public static string shortname = "bv";
     }
 
     public class db_wl
@@ -78,6 +85,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_wl";
+        public static string shortname = "wl";
     }
 
     public class db_ace99
@@ -88,6 +96,7 @@
         public static string userId = "ACE99User";
         public static string password = "@ace9985092212";
         public static string MyID = "db_ace99";
+        public static string shortname = "ace99";
     }
 
     public class db_king4d
@@ -98,6 +107,7 @@
         public static string userId = "King4DUser";
         public static string password = "@king4D85092212";
         public static string MyID = "db_king4d";
+        public static string shortname = "king";
     }
 
     public class db_togelking
@@ -108,6 +118,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_togelking";
+        public static string shortname = "unknown";
     }
 
 
@@ -119,6 +130,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_local";
+        public static string shortname = "unknown";
     }
 
     public class db_local_support
@@ -129,6 +141,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_local_support";
+        public static string shortname = "unknown";
     }
 
     public class db_ghlstaging
@@ -139,6 +152,7 @@
         public static string userId = "sa";
         public static string password = "p@ssw0rd";
         public static string MyID = "db_ghlstaging";
+        public static string shortname = "unknown";
     }
 
     public class db
@@ -157,5 +171,6 @@
         public int Diff {  get; set; }
 
         public string MyID { get; set; }
+        public string shortname {get; set;}
     }
 }

@@ -13,6 +13,7 @@
             db.password = db_ace99.password;
             db.dbfullname = db_ace99.dbfullname;
             db.MyID = db_ace99.MyID;
+            db.shortname = db_ace99.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -22,6 +23,7 @@
             db.password = db_king4d.password;
             db.dbfullname = db_king4d.dbfullname;
             db.MyID = db_king4d.MyID;
+            db.shortname = db_king4d.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -31,6 +33,7 @@
             db.password = db_togelking.password;
             db.dbfullname = db_togelking.dbfullname;
             db.MyID = db_togelking.MyID;
+            db.shortname = db_togelking.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -40,6 +43,7 @@
             db.password = db_bv.password;
             db.dbfullname = db_bv.dbfullname;
             db.MyID=db_bv.MyID;
+            db.shortname = db_bv.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -49,15 +53,8 @@
             db.password = db_wl.password;
             db.dbfullname = db_wl.dbfullname;
             db.MyID= db_wl.MyID;
+            db.shortname = db_wl.shortname;
             dbs.Add(db);
-
-            //db = new db();
-            //db.connStr = db_ghl33.connStr;
-            //db.ip = db_ghl33.ip;
-            //db.userId = db_ghl33.userId;
-            //db.password = db_ghl33.password;
-            //db.dbfullname = db_ghl33.dbfullname;
-            //dbs.Add(db);
 
             db = new db();
             db.connStr = db_ghl55.connStr;
@@ -66,15 +63,8 @@
             db.password = db_ghl55.password;
             db.dbfullname = db_ghl55.dbfullname;
             db.MyID = db_ghl55.MyID;
+            db.shortname = db_ghl55.shortname;
             dbs.Add(db);
-
-            //db = new db();
-            //db.connStr = db_master.connStr;
-            //db.ip = db_master.ip;
-            //db.userId = db_master.userId;
-            //db.password = db_master.password;
-            //db.dbfullname = db_master.dbfullname;
-            //dbs.Add(db);
 
             db = new db();
             db.connStr = db_tm.connStr;
@@ -83,6 +73,7 @@
             db.password = db_tm.password;
             db.dbfullname = db_tm.dbfullname;
             db.MyID=db_tm.MyID;
+            db.shortname = db_tm.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -92,6 +83,7 @@
             db.password = db_tm2.password;
             db.dbfullname = db_tm2.dbfullname;
             db.MyID= db_tm2.MyID;
+            db.shortname = db_tm2.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -101,9 +93,8 @@
             db.password = db_tm3.password;
             db.dbfullname = db_tm3.dbfullname;
             db.MyID = db_tm3.MyID;
+            db.shortname = db_tm3.shortname;
             dbs.Add(db);
-
-            //remarked for Imran testing
 
             db = new db();
             db.connStr = db_local.connStr;
@@ -112,6 +103,7 @@
             db.password = db_local.password;
             db.dbfullname = db_local.dbfullname;
             db.MyID = db_local.MyID;
+            db.shortname = db_local.shortname;
             dbs.Add(db);
 
             db = new db();
@@ -121,6 +113,7 @@
             db.password = db_ghlstaging.password;
             db.dbfullname = db_ghlstaging.dbfullname;
             db.MyID= db_ghlstaging.MyID;
+            db.shortname = db_ghlstaging.shortname;
             dbs.Add(db);
 
         }

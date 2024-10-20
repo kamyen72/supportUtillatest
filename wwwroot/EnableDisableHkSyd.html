@@ -135,21 +135,24 @@
             $.ajax({
                 type: "POST",
                 url: "/Util/CheckApid",
-                data: JSON.stringify({ "InputText": myval }),
+                data: JSON.stringify({ "Val1": myval, "Val2": "" }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
                     //$("#div_result2").attr("style", "display:none;");
                     let txt = response.ReturnText;
-                    // alert(txt);
-
+                    
                     document.getElementById("div_result2").style.display = "block";
                     document.getElementById("div_result2").style.textAlign = "center";
                     document.getElementById("div_result2").style.paddingTop = "10px";
 
-                    document.getElementById("div_result2").style.paddingLeft = ((screen.width / 2) - 650) + "px";
-
                     $("#div_result2").html(txt);
+
+                    var tblw = document.getElementById("apidtable").offsetWidth;
+                    var divw = document.getElementById("div_result2").offsetWidth;
+                    var padw = (divw - tblw) / 2;
+
+                    document.getElementById("div_result2").style.paddingLeft = padw + "px";
                 },
                 failure: function (response) {
                     alert(response.responseText);
@@ -163,16 +166,16 @@
 
     <script>
         function toggleStatus(me) {
-            alert(me.getAttribute("data-apid") + " \n " + me.getAttribute("data-status"));
+            alert(me.getAttribute("data-apid") + " \n " + me.getAttribute("data-status") + "\n" + me.getAttribute("data-platform"));
 
             $.ajax({
                 type: "POST",
-                url: "/API/ChangeStatusHkSyd",
-                data: JSON.stringify({ "companyId": me.getAttribute("data-apid"), "status": me.getAttribute("data-status") }),
+                url: "/Util/ChangeStatusHkSyd",
+                data: JSON.stringify({ "companyId": me.getAttribute("data-apid"), "status": me.getAttribute("data-status"), "platform": me.getAttribute("data-platform") }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    alert("MPlayer Record Created");
+                    alert(response.ReturnText);
                     window.location.reload();
                 },
                 failure: function (response) {
@@ -234,7 +237,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12 col-md-12" id="div_result2" style="display:none;">
+            <div class="col-sm-12 col-md-12" id="div_result2" style="display:none;text-align:center;">
             </div>
         </div>
 

@@ -128,9 +128,10 @@ namespace DupRecRemoval.Controllers
         [EnableCors("AllowAll")]
         [Route("CheckApid")]
         [HttpPost]
-        public IActionResult CheckApid([FromBody] InputModel model)
+        public IActionResult CheckApid([FromBody] TwoParams model)
         {
-            string CurrentPeriod = model.InputText;
+            string CurrentPeriod = model.Val1;
+            string shortdb = model.Val2;
 
             DBUtil dbu = new DBUtil();
 
@@ -147,13 +148,14 @@ namespace DupRecRemoval.Controllers
         {
             string companyId = model.companyId;
             string status = model.status;
+            string shortdb = model.platform;
 
 
             DBUtil dBUtil = new DBUtil();
-            dBUtil.ChangeStatusHkSyd(companyId, status);
+            dBUtil.ChangeStatusHkSyd(companyId, status, shortdb);
 
             ReturnModel rJason = new ReturnModel();
-            rJason.ReturnText = "Done Creation of MPlayer Records";
+            rJason.ReturnText = "Done Creation of MPlayer Records on " + shortdb;
             return Ok(rJason);
         }
     }

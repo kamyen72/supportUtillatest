@@ -9,6 +9,7 @@ using SupportUtilV3.Classes;
 using SupportUtilV4.Classes;
 using System.Data;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 namespace SupportUtil.Classes
@@ -2089,8 +2090,27 @@ namespace SupportUtil.Classes
         {
             string result = "";
             string txt = "";
-            string sql = "select * from platformsetting where Apid = '@dbCurrentPeriod'";
-            string sql2 = sql.Replace("@dbCurrentPeriod", CurrentPeriod);
+            string sql = "";
+            sql = sql + "select ";
+            sql = sql + "ID ";
+            sql = sql + ", APID ";
+            sql = sql + ", PlatformGroup ";
+            sql = sql + ", RecsInPlatform = case ";
+            sql = sql + "when (PlatformGroup = 'hl') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [GHL].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'tm') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [ThirdM].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'tm2') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [ThirdM2].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'tm3') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [ThirdM3].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'ace99') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.149'; 'sa'; 'p@ssw0rd', [ACE99].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'king') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.149'; 'sa'; 'p@ssw0rd', [King4D].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'bv') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [bv].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "when (PlatformGroup = 'wl') then (select count(*) from openrowset('SQLOLEDB', '192.82.60.55'; 'sa'; 'p@ssw0rd', [wl].[dbo].[LotteryTypeMaintain]) where CompanyID = p.ID and LotteryTypeID in (18,19)) ";
+            sql = sql + "else 0 ";
+            sql = sql + "end ";
+            sql = sql + "from platformsetting p ";
+            sql = sql + "where Apid = '@dbAPID' ";
+            sql = sql + "Group By ID, APID, PlatformGroup ";
+            sql = sql + "order by APID, ID, PlatformGroup ";
+            string sql2 = sql.Replace("@dbAPID", CurrentPeriod);
             SqlConnection connection = new SqlConnection(db_ghl33.connStr);
             connection.Open();
             SqlCommand command = new SqlCommand(sql2, connection);
@@ -2100,7 +2120,7 @@ namespace SupportUtil.Classes
             adapter.Fill(myDataRows);
             connection.Close();
             int mx = myDataRows.Rows.Count;
-            txt = "<table cellspacing=0 cellpadding=0>";
+            txt = "<table cellspacing=0 cellpadding=0 id='apidtable'>";
             txt = txt + "<tr>";
             txt = txt + "<td class='cell hdcell'>##</td>";
             txt = txt + "<td class='cell hdcell'>CompanyID</td>";
@@ -2112,24 +2132,9 @@ namespace SupportUtil.Classes
             for (int i = 0; i < mx; i++)
             {
                 var thisrow = myDataRows.Rows[i];
-
-                string sqlStatus = "select * from LotteryTypeMaintain where companyID = '@dbcompanyID' and LotteryTypeID in (18,19)";
-                string sqlStatus2 = sqlStatus.Replace("@dbcompanyID", thisrow["ID"].ToString());
-
-                SqlConnection connection1 = new SqlConnection(db_tm.connStr);
-                connection1.Open();
-
-                SqlCommand command1 = new SqlCommand(sqlStatus2, connection1);
-                command1.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
-                DataTable myDataRows1 = new DataTable();
-
-                SqlDataAdapter adapter1 = new SqlDataAdapter(command1);
-                adapter1.Fill(myDataRows1);
-                connection1.Close();
-                int thisrow1 = myDataRows1.Rows.Count;
                 string status = "";
                 string status2 = "";
-                if (thisrow1 > 0)
+                if (int.Parse(thisrow["RecsInPlatform"].ToString()) == 0)
                 {
                     status = "Enabled";
                     status2 = "Disabled";
@@ -2148,7 +2153,7 @@ namespace SupportUtil.Classes
                 txt = txt + "<td class='cell'>" + thisrow["PlatformGroup"].ToString() + "</td>";
                 txt = txt + "<td class='cell'>" + thisrow["APID"].ToString() + "</td>";
                 txt = txt + "<td class='cell'>" + status + "</td>";
-                txt = txt + "<td class='cell'><span class='spanbutt' onclick='toggleStatus(this)' data-apid='" + thisrow["ID"].ToString() + "' data-status='" + status + "'>" + status2 + "</span></td>";
+                txt = txt + "<td class='cell'><span class='spanbutt' onclick='toggleStatus(this)' data-apid='" + thisrow["ID"].ToString() + "' data-platform='" + thisrow["PlatformGroup"].ToString() + "' data-status='" + status + "'>" + status2 + "</span></td>";
                 txt = txt + "</tr>";
             }
             txt = txt + "</table>";
@@ -2157,46 +2162,62 @@ namespace SupportUtil.Classes
             return returntext;
         }
 
-        public void ChangeStatusHkSyd(string companyId, string status)
+        public void ChangeStatusHkSyd(string companyId, string status, string shortdbname)
         {
-            Console.WriteLine(status == "Enabled");
+            //Console.WriteLine(status == "Enabled");
 
-            if (status == "Enabled")
+            var localconnection = "";
+            string sql = "";
+            string sql2 = "";
+
+            if (shortdbname == "" && companyId != "")
             {
-                string sql = "delete from LotteryTypeMaintain where LotteryTypeID in (18, 19) CompanyID = '@dbCurrentPeriod'";
-                string sql2 = sql.Replace("@dbCurrentPeriod", companyId);
-
-                SqlConnection connection = new SqlConnection(db_tm.connStr);
-                connection.Open();
-
-                SqlCommand command = new SqlCommand(sql2, connection);
-                command.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
-                command.ExecuteNonQuery();
-                connection.Close();
+                
             }
-            else
+            else // shortdbname is not null
             {
-                string sqlHk = "insert into LotteryTypeMaintain (LotteryTypeID,CompanyID,Status,IsMaintain,IsCloseGame,CreateDate,CreateBy,UpdateDate,UpdateBy) VALUES (18, @dbCurrentPeriod, 0, 0, 0, CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0)";
-                string sqlHk2 = sqlHk.Replace("@dbCurrentPeriod", companyId);
+                DBList dbs = new DBList();
+                int cnt = dbs.dbs.Count;
 
-                SqlConnection connection = new SqlConnection(db_tm.connStr);
-                connection.Open();
+                for (int x = 0; x < cnt; x++)
+                {
+                    if ( dbs.dbs[x].shortname == shortdbname)
+                    {
+                        localconnection = dbs.dbs[x].connStr;
+                        break;
+                    }
+                }
 
-                SqlCommand command1 = new SqlCommand(sqlHk2, connection);
-                command1.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
-                command1.ExecuteNonQuery();
+                if (status == "Disabled")
+                {
+                    sql = "delete from LotteryTypeMaintain where LotteryTypeID in (18, 19) CompanyID = '@dbCurrentPeriod'";
+                    sql2 = sql.Replace("@dbCurrentPeriod", companyId);
 
-                string sqlSyd = "insert into LotteryTypeMaintain (LotteryTypeID,CompanyID,Status,IsMaintain,IsCloseGame,CreateDate,CreateBy,UpdateDate,UpdateBy) VALUES (19, @dbCurrentPeriod, 0, 0, 0, CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0)";
-                string sqlSyd2 = sqlSyd.Replace("@dbCurrentPeriod", companyId);
+                    SqlConnection connection = new SqlConnection(localconnection);
+                    connection.Open();
 
-                SqlCommand command2 = new SqlCommand(sqlSyd2, connection);
-                command2.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
-                command2.ExecuteNonQuery();
+                    SqlCommand command = new SqlCommand(sql2, connection);
+                    command.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
+                    //command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                else // when status is Disabled (original)
+                {
+                    sql = "insert into LotteryTypeMaintain (LotteryTypeID,CompanyID,Status,IsMaintain,IsCloseGame,CreateDate,CreateBy,UpdateDate,UpdateBy) VALUES (18, @dbCurrentPeriod, 0, 0, 0, CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0)";
+                    sql2 = sql.Replace("@dbCurrentPeriod", companyId);
 
-                connection.Close();
+                    SqlConnection connection = new SqlConnection(localconnection);
+                    connection.Open();
+
+                    SqlCommand command1 = new SqlCommand(sql2, connection);
+                    command1.CommandTimeout = 300; // 5 minutes (60 seconds X 5)
+                    //command1.ExecuteNonQuery();
+
+                    connection.Close();
+                }
             }
-
         }
+
 
         public string GetConnStr(string dbname)
         {
@@ -2219,5 +2240,8 @@ namespace SupportUtil.Classes
         }
     }
 
-    
+
 }
+
+    
+
